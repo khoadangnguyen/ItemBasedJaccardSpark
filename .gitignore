@@ -1,0 +1,7 @@
+.bsp
+.idea
+app-log/*
+project
+target
+spark-event-log/*
+data/output/*

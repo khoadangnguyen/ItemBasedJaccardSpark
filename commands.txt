@@ -1,0 +1,31 @@
+docker exec -it spark-master /opt/bitnami/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  --properties-file /opt/bitnami/spark/ItemBasedJaccardSpark/conf/spark.conf \
+  --files ./ItemBasedJaccardSpark/conf/log4j.properties \
+  --conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=file:./ItemBasedJaccardSpark/conf/log4j.properties" \
+  --conf "spark.executor.extraJavaOptions=-Dlog4j.configuration=file:./ItemBasedJaccardSpark/conf/log4j.properties" \
+  --total-executor-cores 4 \
+  --executor-memory 512MB \
+  --driver-memory 2G \
+  --class local.khoa.JaccardSimilarityCalculation \
+./ItemBasedJaccardSpark/target/JaccardSimilarityCalculation.jar
+
+docker exec -it spark-master /opt/bitnami/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  --properties-file /opt/bitnami/spark/ItemBasedJaccardSpark/conf/spark.conf \
+  --files ./ItemBasedJaccardSpark/conf/log4j.properties \
+  --conf "spark.driver.extraJavaOptions=-Dlog4j.configuration=file:./ItemBasedJaccardSpark/conf/log4j.properties" \
+  --conf "spark.executor.extraJavaOptions=-Dlog4j.configuration=file:./ItemBasedJaccardSpark/conf/log4j.properties" \
+  --total-executor-cores 2 \
+  --executor-memory 512MB \
+  --class local.khoa.MovieRecommendation \
+./ItemBasedJaccardSpark/target/MovieRecommendation.jar 260
+
+sbt -DmainClass=local.khoa.JaccardSimilarityCalculation packageJaccardSimilarityCalculation
+
+sbt -DmainClass=local.khoa.MovieRecommendation packageMovieRecommendation
+
+docker exec -it spark-master bash -c "/opt/bitnami/spark/sbin/stop-history-server.sh"
+
+docker exec -it spark-master bash -c "/opt/bitnami/spark/sbin/start-history-server.sh \
+    --properties-file ItemBasedJaccardSpark/conf/spark-history-server.conf"

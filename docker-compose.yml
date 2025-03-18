@@ -1,0 +1,50 @@
+services:
+  spark-master:
+    image: bitnami/spark:3.5.4
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+      - "18080:18080"
+      - "4040:4040"
+    environment:
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MODE=master
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    volumes:
+      - ./:/opt/bitnami/spark/ItemBasedJaccardSpark
+    networks:
+      - spark-net
+
+  spark-worker:
+    image: bitnami/spark:3.5.4
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_MODE=worker
+    ports:
+      - "8081-8084:8081"
+    deploy:
+      replicas: 4
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    volumes:
+      - ./:/opt/bitnami/spark/ItemBasedJaccardSpark
+    networks:
+      - spark-net
+
+networks:
+  spark-net:
+    name: spark-net
+    driver: bridge

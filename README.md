@@ -5,7 +5,7 @@ ItemBasedJaccardSpark is a Spark-Scala project that finds similar movies using t
 1. [Overview](#1-overview)
 2. [Data](#2-data)
 3. [Setup](#3-setup)
-4. [Item-Based Jaccard Similarity and Implementation](#4-implementation)
+4. [Item-Based Jaccard Similarity and Implementation](#4-Item-Based Jaccard Similarity and Implementation)
 5. [Performance](#5-performance)
 6. [Extensions and Future Work](#6-extension)
 

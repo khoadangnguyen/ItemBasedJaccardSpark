@@ -31,7 +31,7 @@ which contains 1 million ratings provided by 6,000 users across 4,000 movies.
 ## 3. Setup
 1. Docker is used to set up a standalone Spark cluster with bitnami/spark:3.5.4 image.
 2. Spark (3.5.4) applications are implemented in Scala (2.12.20).
-3. sbt (1.10.3) is used to package Scala applications into JAR files, which are then submitted to the Spark cluster for execution
+3. sbt (1.10.3) is used to package Scala applications into JAR files, which are then submitted to the Spark cluster for execution.
 
 
 ## 4. Item-Based Jaccard Similarity and Implementation
@@ -54,5 +54,37 @@ Where:
 
 This formula helps me calculate the similarity between two movies based on the number of common users who have rated them.
 
-### 4.2 Implementation
+### 4.2 Applying Item-Based Jaccard Similarity
+Since ratings are 1-to-5-star scale, the implementation applies Jaccard similarity using bag-based approach.
 
+#### 4.2.1 Jaccard similarity for bags
+When a user u rates a movie m with n stars, the movie bag of m contains n copies of user u. 
+
+Example
+Ratings for m1
+* User u1 rates movie m1 5 stars
+* User u2 rates movie m1 4 stars
+* User u3 rates movie m1 3 stars 
+
+The user bag for movie m1:
+{u1, u1, u1, u1, u1, u2, u2, u2, u2, u3, u3, u3}
+
+Ratings for m2
+* User u1 rates movie m2 3 stars
+* User u2 rates movie m2 2 stars
+* User u4 rates movie m2 4 stars
+
+The user bag for movie m2:
+{u1, u1, u1, u2, u2, u4, u4, u4, u4}
+
+Calculating Jaccard Similarity
+
+|m1 ∩ m2| = |{u1, u1, u1, u1, u1, u2, u2, u2, u2, u3, u3, u3} ∩ {u1, u1, u1, u2, u2, u4, u4, u4, u4}| 
+= |{u1, u1, u1, u2, u2}| = 5
+
+|m1 ∪ m2| = |{u1, u1, u1, u1, u1, u2, u2, u2, u2, u3, u3, u3} ∪ {u1, u1, u1, u2, u2, u4, u4, u4, u4}|
+= |{u1, u1, u1, u1, u1, u2, u2, u2, u2, u3, u3, u3, u1, u1, u1, u2, u2, u4, u4, u4, u4}| = 21
+
+J(m1, m2) = 5/21 = 0.23809524
+
+#### 4.2.2 Implementation

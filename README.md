@@ -87,4 +87,39 @@ Calculating Jaccard Similarity
 
 J(m1, m2) = 5/21 = 0.23809524
 
-#### 4.2.2 Implementation
+#### 4.2.2 Item-based Jaccard Similarity Calculation Implementation
+
+The input ratings data itself resembles a bag, where each row contains movieId, userId, and rating. The rating value 
+represents the number of times that userId appears in the movie’s bag.
+
+To determine the total occurrences of all users in a movie’s bag, the data is grouped by movieId, and the sum of ratings 
+is calculated.
+
+Next, the ratings data is self-joined to create movie pairs, ensuring that only movies rated by the same users are considered. 
+The number of common users between two movie bags is determined by taking the minimum rating count between the two movies 
+for each shared user.
+
+Finally, the Jaccard Similarity is computed as:
+
+$$
+J(m_1, m_2) = \frac{\text{Number of common users}}{\text{Sum of ratings for both movies in the pair}}
+$$
+
+#### 4.2.3 Movie Recommendation Implementation
+
+Given an input movieId, similar movies are identified by filtering precomputed Jaccard similarity scores for movie pairs.
+
+Additionally, movie names are read from the input dataset and retrieved for display, ensuring that the recommendations 
+are presented with their corresponding titles.
+
+## 5. Performance
+Using a dataset of 1 million ratings from 6,000 users across 4,000 movies, the Jaccard Similarity computation completes 
+in approximately 1 minute.
+
+The execution runs on a Spark cluster with a total of 4 cores allocated across all executors, where each executor is 
+assigned 512MB of memory.
+
+## 6. Extension and Future Work
+* Implement a metric to compare the effectiveness of different recommendation algorithms.
+* Develop a customer-based approach for similarity computation.
+* Redesign the system for a streaming architecture to handle real-time data.
